@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/nadiacom/nodejsproject_ece_serverasync/issues"
   },
-  "homepage": "https://github.com/nadiacom/nodejsproject_ece_serverasync#readme"
+  "homepage": "https://github.com/nadiacom/nodejsproject_ece_serverasync#readme",
+  "dependencies": {
+    "coffee-script": "^1.11.1"
+  }
 }
