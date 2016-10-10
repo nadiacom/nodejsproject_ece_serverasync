@@ -1,0 +1,19 @@
+{
+  "name": "nodejsproject",
+  "version": "1.0.0",
+  "description": "ece project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nadiacom/nodejsproject_ece_serverasync.git"
+  },
+  "author": "Nadia Comptier",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nadiacom/nodejsproject_ece_serverasync/issues"
+  },
+  "homepage": "https://github.com/nadiacom/nodejsproject_ece_serverasync#readme"
+}
