@@ -2,7 +2,7 @@ var should, user;
 
 should = require('should');
 
-user = require('../src/user.coffee');
+user = require('../lib/user.js');
 
 describe('my first test list', function() {
   return it('should get a user w/ right parameters', function(done) {
