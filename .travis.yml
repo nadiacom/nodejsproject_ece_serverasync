@@ -5,4 +5,7 @@ before_install:
   - npm install --save-dev mocha
   - npm install mocha
   - npm install should
+  - npm install --save coffee-script
+  - npm install express --save
 install: npm install
+before_script: coffee --compile --output lib/ src/
