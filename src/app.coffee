@@ -1,10 +1,13 @@
 # Import a module
 http = require 'http'
 user = require './user.coffee'
+metrics = require './metrics.coffee'
 url = require 'url'
 fs = require 'fs'
 express = require 'express'
+bodyParser = require 'body-parser'
 app = express()  
+
 
 # set port
 app.set 'port', 1337  
@@ -17,6 +20,10 @@ app.set 'view engine', 'jade'
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
 
+#Posting metrics :  body-parser to parse the request’s body
+app.use bodyParser.json()
+app.use bodyParser.urlencoded()
+
 app.listen app.get('port'), () ->
   console.log "server listening on #{app.get 'port'}"
 
@@ -28,8 +35,21 @@ app.get '/', (req, res) -> 
 app.get '/hello/:name', (req, res) -> 
   res.send "Hello #{req.params.name}"
 
-app.post '/', (req, res) -> 
-  # POST  
+# Expose the metrics on the back-end
+app.get '/metrics.json', (req, res) ->
+  metrics.get (err, data) ->
+    throw next err if err
+    res.status(200).json data
+    console.log "got param :"
+
+app.get '/metrics', (req, res) -> 
+  res.send "Coucou"
+
+app.post '/metrics', (req, res) -> 
+  name = req.body.timestamp
+  color = req.body.value
+  res.send(name + ' ' + color );
+  console.log "param !!" +name+color
 
 app.put '/', (req, res) -> 
   # PUT

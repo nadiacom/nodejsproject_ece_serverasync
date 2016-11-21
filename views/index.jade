@@ -7,7 +7,7 @@ block head 
   link(rel='stylesheet', href='../public/css/bootstrap.min.css')
 
 block content
-  +nav("Project name", "dropdown_menu")
+  +nav("ECE Node js project", "dropdown_menu")
     +nav_item( "index.html", "active" ) Home
     +nav_item( "about.html" ) About
     +nav_item( "contact.html" ) Contact
@@ -22,3 +22,19 @@ block content
 
   +panel("Panel Heading") We are a fairly small, flexible design studio that designs for print and web. We work flexibly with clients to fulfil their design needs. Whether you need to create a brand from scratch, including marketing materials and a beautiful and functional website or whether you are looking for a design refresh we are confident you will be pleased with the results.
   +button("info", "info.html", "small") Info
+
+  div.container
+    div.col-md-6.col-md-offset-3
+      p hello world ! 
+      button(type="button" class="btn btn-success" id="show-metrics") Bring the metrics 
+      #metrics
+
+  script
+    :coffee-script
+      $('#show-metrics').click (e) ->
+        e.preventDefault()
+        $.getJSON "/metrics.json", {}, (data) ->
+          content = ""
+          for d in data
+            content += "timestamp: #{d.timestamp}, value: #{d.value}"
+            $('#metrics').append content
