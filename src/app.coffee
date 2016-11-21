@@ -50,6 +50,10 @@ app.post '/metrics', (req, res) -> 
   color = req.body.value
   res.send(name + ' ' + color );
   console.log "param !!" +name+color
+  metrics.save 0, req, (err) -> 
+    throw err  if err
+    console.log 'Metrics saved'
+
 
 app.put '/', (req, res) -> 
   # PUT
