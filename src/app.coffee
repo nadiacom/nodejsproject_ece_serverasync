@@ -7,6 +7,8 @@ fs = require 'fs'
 express = require 'express'
 bodyParser = require 'body-parser'
 app = express()  
+d3 = require 'd3'
+path = require('path')
 
 
 # set port
@@ -19,6 +21,8 @@ app.set 'view engine', 'jade'
 # Make it sexy ! bootstrap css & jquery js links
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
+# Get /styles/..
+app.use '/styles', express.static "#{__dirname}/../styles"
 
 #Posting metrics :  body-parser to parse the request’s body
 app.use bodyParser.json()
@@ -27,6 +31,7 @@ app.use bodyParser.urlencoded()
 app.listen app.get('port'), () ->
   console.log "server listening on #{app.get 'port'}"
 
+#HOME PAGE
 app.get '/', (req, res) -> 
   #res.end('Hello World\n');
   res.render 'index', {}
@@ -42,24 +47,23 @@ app.get '/metrics.json', (req, res) ->
     res.status(200).json data
     console.log "got param :"
 
+#METRICS PAGE
 app.get '/metrics', (req, res) -> 
-  res.send "Coucou"
+  res.render 'metrics', {}
 
 app.post '/metrics', (req, res) -> 
-  name = req.body.timestamp
-  color = req.body.value
-  res.send(name + ' ' + color );
-  console.log "param !!" +name+color
-  metrics.save 0, req, (err) -> 
-    throw err  if err
-    console.log 'Metrics saved'
-
+  console.log req.body
+  metrics.batch req.body, (err, value) ->
+    throw err if err
+    res.json value
 
 app.put '/', (req, res) -> 
   # PUT
 
 app.delete '/', (req, res) -> 
   # DELETE
+
+
 
 # Without Express : OLD
 # Declare an http server
