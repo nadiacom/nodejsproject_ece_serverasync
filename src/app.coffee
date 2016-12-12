@@ -8,6 +8,7 @@ express = require 'express'
 bodyParser = require 'body-parser'
 app = express()  
 d3 = require 'd3'
+jsdom = require 'jsdom'
 path = require('path')
 
 
@@ -23,6 +24,8 @@ app.set 'view engine', 'jade'
 app.use '/public', express.static "#{__dirname}/../public"
 # Get /styles/..
 app.use '/styles', express.static "#{__dirname}/../styles"
+# Get node_modules/...
+app.use '/node_modules', express.static "#{__dirname}/../node_modules"
 
 #Posting metrics :  body-parser to parse the request’s body
 app.use bodyParser.json()
@@ -42,10 +45,22 @@ app.get '/hello/:name', (req, res) -> 
 
 # Expose the metrics on the back-end
 app.get '/metrics.json', (req, res) ->
-  metrics.get (err, data) ->
+  metrics.get_test (err, data) ->
     throw next err if err
     res.status(200).json data
-    console.log "got param :"
+
+# Get metrics from db
+app.get '/my_metrics.json', (req, res) ->
+  metrics.get '1','1','2013-01-09', (err, data) ->
+    throw next err if err
+    res.status(200).json data
+
+# Get readStream from db
+app.get '/my_many_metrics.json', (req, res) ->
+  metrics.readStream '1','1', (err, data) ->
+    throw next err if err
+    console.log 'test : '+data+' '
+    res.status(200).json data
 
 #METRICS PAGE
 app.get '/metrics', (req, res) -> 

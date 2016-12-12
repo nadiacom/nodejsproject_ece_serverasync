@@ -1,7 +1,29 @@
 doctype html
 html(lang="en")
   head
-    title My Web Page 
-    block head
+    title ECE Async node project
+    block head 
+      script(src='../public/js/jquery-3.1.1.min.js', type='text/javascript')
+      script(src='../public/js/bootstrap.min.js',type='text/javascript')
+      link(rel='stylesheet', href='../public/css/bootstrap.min.css')
+      link(rel='stylesheet', href='../styles/styles.css')
+      script(src='node_modules/d3/build/d3.min.js')
+      script(src='http://d3js.org/d3.v3.min.js')
+      script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
   body
     block content
+      +nav("ECE Node js project", "dropdown_menu")
+        +nav_item( "index.html", "active" ) Home
+        +nav_item( "about.html" ) About
+        +nav_item( "contact.html" ) Contact
+        +nav_item_dropdown( "#" )( label="Dropdown" )
+          +nav_item( "#" ) Action
+              +nav_item( "#" ) Another action
+              +nav_item( "#" ) Something else here
+              +nav_divider
+              +nav_header Nav header
+              +nav_item( "#" ) Separated link
+              +nav_item( "#" ) One more separated link
+    
+      +panel("Panel Heading") We are a fairly small, flexible design studio that designs for print and web. We work flexibly with clients to fulfil their design needs. Whether you need to create a brand from scratch, including marketing materials and a beautiful and functional website or whether you are looking for a design refresh we are confident you will be pleased with the results.
+      +button("info", "info.html", "small") Info
