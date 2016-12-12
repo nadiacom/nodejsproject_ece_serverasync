@@ -1,4 +1,10 @@
 # nodejsproject_ece_serverasync
 
+#Set up
+npm install
+
+#Run project
+npm start
+
 # Run tests
-./bin/test
+npm test
