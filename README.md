@@ -1,12 +1,26 @@
 # ECE Asynchronous server - Final project
 
+![Build](https://travis-ci.org/nadiacom/nodejsproject_ece_serverasync)
+
 Nodejs (nodemon), express (coffeescript, pug transpilers), LevelDB (using Postman), D3, Travis CLI (mocha, should)
 
-#Set up
+## Setup
+
+```
 npm install
+chmod +x bin/*
+```
 
-#Run project
+
+## Run
+
+```
 npm start
+```
 
-# Run tests
+## Test
+
+```
 npm test
+```
+Tests use [mocha](https://mochajs.org) & [should](https://shouldjs.github.io)
