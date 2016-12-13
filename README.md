@@ -15,6 +15,8 @@ chmod +x bin/*
 ## Run
 
 ```
+bin/start
+# or
 npm start
 ```
 
