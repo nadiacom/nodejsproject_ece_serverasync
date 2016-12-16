@@ -3,24 +3,40 @@ extends layout
 
 block append content
   div.container
-    div.col-md-6.col-md-offset-3
-      p hello world ! 
-    div#chart.col-md-6
-  script.
-    var myData = [{'timestamp':'2013-01-09','value':'12'},{'timestamp':'2013-01-10', 'value':'28'}];
-    console.log(myData);
+    div#main
     
-    $.getJSON("/my_many_metrics.json", {}, function(data) {
+  script.
+    var nb_charts = 0;
+    var myData = [{'timestamp':'2013-01-09','value':'12'},{'timestamp':'2013-01-10', 'value':'28'}];
+    
+    $.getJSON("/nb_charts.json", {}, function(data) {
       console.log(data);
-      myData = JSON.parse(JSON.parse(data));
-      DrawChart();
-      return myData;
+      nb_charts = data;
+      append_charts();
+      return data;
     });
     
-    function DrawChart() {
+    function append_charts() {
+      for(i=1;i<=nb_charts;i++){
+        // Append charts elements
+        $("div#main").append('<div class="col-md-6"><h3 class="center">chart '+i+'</h3><div id="chart'+i+'"></div></div>');
+        // GetJSON : load data for METRICS
+        (function(i) { // protects i in an immediately called function
+          $.getJSON("/my_many_metrics/"+i, {}, function(data) {
+            //console.log(data);
+            myData = JSON.parse(JSON.parse(data));
+            // Draw chart
+            DrawChart("chart"+i);
+            return myData;
+            });
+        })(i);
+      }
+    }
+    
+    function DrawChart(chart) {
     var margin = {top: 40, right: 20, bottom: 30, left: 40},
-        width = 960 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        width = 450 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
         
         // Parse the date / time
     var	parseDate = d3.time.format("%Y-%m-%d").parse;
@@ -47,7 +63,7 @@ block append content
         return "<strong>Value:</strong> <span style='color:red'>" + d.value + "</span>";
       })
     
-    var svg = d3.select("div#chart").append("svg")
+    var svg = d3.select("div#"+chart).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")

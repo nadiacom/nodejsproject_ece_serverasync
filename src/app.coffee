@@ -8,7 +8,6 @@ express = require 'express'
 bodyParser = require 'body-parser'
 app = express()  
 d3 = require 'd3'
-jsdom = require 'jsdom'
 path = require('path')
 
 
@@ -51,13 +50,22 @@ app.get '/metrics.json', (req, res) ->
 
 # Get metrics from db
 app.get '/my_metrics.json', (req, res) ->
-  metrics.get '1','1','2013-01-09', (err, data) ->
+  metrics.get '1','1','2016-01-09', (err, data) ->
     throw next err if err
     res.status(200).json data
 
 # Get readStream from db
-app.get '/my_many_metrics.json', (req, res) ->
-  metrics.readStream '1','1', (err, data) ->
+app.get '/my_many_metrics/:chart_id', (req, res) ->
+  chart_id = req.params.chart_id.toString()
+  console.log "hey"+ chart_id
+  metrics.readStream '1',chart_id, (err, data) ->
+    throw next err if err
+    console.log 'test final: '+data+' '
+    res.status(200).json data
+
+# Get readStream from db
+app.get '/nb_charts.json', (req, res) ->
+  metrics.getNbChart '1', (err, data) ->
     throw next err if err
     console.log 'test : '+data+' '
     res.status(200).json data

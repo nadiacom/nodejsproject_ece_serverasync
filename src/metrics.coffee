@@ -43,18 +43,33 @@ module.exports = 
       # likely the key was not found
       callback null, val
 
+  # Get the number of charts for specific user
+  getNbChart: (user_id, callback) ->
+    arr = []
+    stream = db.createReadStream()
+    stream.on 'data', (val) ->
+      if val.key.substring(0, 9) == 'metric:' + user_id + ':'
+        z = val.key.split ':'
+        z = z[2]
+        arr.push(z)
+    stream.on 'close', ->
+      max = Math.max.apply(Math, arr)
+      console.log max
+      callback null, max
+
+  # Get metrics for specific chart
   readStream: (user_id,chart_id,callback) ->
     x = '['
     y =''
-    stream = db.createReadStream
-      start: 'metric:1:1:2013-01-09'
-      end: 'metric:1:1:2013-01-11'
+    stream = db.createReadStream()
     stream.on 'data', (val) ->
-      console.log val.value
-      z = val.key.split ':'
-      z = z[3]
-      y = val.value
-      x += JSON.stringify({ timestamp: z, value: y })+','
+      console.log val.key
+      if val.key.substring(0, 10) == 'metric:' + user_id + ':'+chart_id
+        console.log val.value
+        z = val.key.split ':'
+        z = z[3]
+        y = val.value
+        x += JSON.stringify({ timestamp: z, value: y })+','
     stream.on 'close', ->
       x = x.slice(0, -1) + ']'
       x= JSON.stringify(x)
@@ -67,10 +82,7 @@ module.exports = 
   batch: (metrics, callback) ->
     db.batch metrics, (err) ->
       if err then callback err
-    db.get "metric:1:2013-01-09", (err, val) ->
-      if err then callback err
-      # likely the key was not found
-      callback null, val
+      callback null, "batch done !"
 
 
   save: (id, metrics, callback) -> 
