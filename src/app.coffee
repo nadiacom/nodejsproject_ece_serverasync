@@ -73,7 +73,11 @@ app.get '/nb_charts.json', (req, res) ->
 
 #METRICS PAGE
 app.get '/metrics', (req, res) -> 
-  res.render 'metrics', {}
+  # Get number of charts
+  metrics.getNbChart '1', (err, data) ->
+    throw next err if err
+    console.log 'test : '+data+' '
+    res.render 'metrics', {pageData: { new_chart:''+(data+1)*1}}
 
 app.post '/metrics', (req, res) -> 
   console.log req.body

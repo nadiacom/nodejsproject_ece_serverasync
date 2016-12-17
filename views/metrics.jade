@@ -4,7 +4,7 @@ extends layout
 block append content
   div.container
     +panel("Hello, welcome on your dashboard !") Visualize your own metrics on charts. Add and remove some metrics by clicking on edit button.
-    +button("info", "info.html", "small") Add a new chart
+    a.btn.btn-info.btn-sm(type='button',href = '/edit/#{pageData.new_chart}') Add a new chart
     div#main
     
   script.
