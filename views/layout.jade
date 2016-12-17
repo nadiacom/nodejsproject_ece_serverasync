@@ -4,22 +4,26 @@ html(lang="en")
     title ECE Async node project
     block head 
       script(src='../public/js/jquery-3.1.1.min.js', type='text/javascript')
-      script(src='node_modules/bootstrap/dist/js/bootstrap.min.js',type='text/javascript')
-      link(rel='stylesheet', href='node_modules/bootstrap/dist/css/bootstrap.min.css')
+      script(src='../node_modules/bootstrap/dist/js/bootstrap.min.js',type='text/javascript')
+      // Optional theme for bootstrap datetimepicker
+      link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css')
+      link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js')
+      script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js')
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/bootstrap-validator/0.5.3/js/bootstrapValidator.js')
+      link(rel='stylesheet', href='../node_modules/bootstrap/dist/css/bootstrap.min.css')
       link(rel='stylesheet', href='../styles/styles.css')
-      script(src='node_modules/d3/build/d3.min.js')
+      script(src='../node_modules/d3/build/d3.min.js')
       script(src='http://d3js.org/d3.v3.min.js')
       script(src='http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js')
   body
     block content
-      span.glyphicon.glyphicon-off(aria-hidden='true') Coucou
       +nav("ECE Node js project", "dropdown_menu")
-        +nav_item( "metrics.jade", "active" ) Dashboard
+        +nav_item( "metrics", "active" ) Dashboard
         +nav_item_dropdown( "#" )( label="username" )
-          +nav_item( "#" ) Signout
+          +nav_item_login( "#" ) Signout
           +nav_divider
           +nav_header Soon
           +nav_item( "#" ) Edit my profile
-    
-      +panel("Welcome !") Hello, welcome your dashboard !<br> Visualize your own metrics on charts created by D3 chart. Add and remove some metrics by clicking on edit button. 
-      +button("info", "info.html", "small") Info
+     

@@ -23,19 +23,18 @@ module.exports = 
         timestamp:(new Date '2013-11-04 14:30 UTC').getTime(), value:15 
     ]
 
-  put: (id, metrics, callback) ->
-    for metric in metrics 
-      {timestamp, value} = metric
-      console.log timestamp, value
-      db.put "metric:#{id}:#{timestamp}", value, (err) ->
+  put: (user_id, chart_id, metrics, callback) ->
+    {timestamp, value} = metrics
+    console.log "bonbon:"+ timestamp, value
+    db.put "metric:#{user_id}:#{chart_id}:#{timestamp}", value, (err) ->
+      if err then callback err
+      # some kind of I/O error
+      # 3) fetch by key
+      db.get "metric:#{user_id}:#{chart_id}:#{timestamp}", (err, val) ->
         if err then callback err
-        # some kind of I/O error
-        # 3) fetch by key
-        db.get "metric:#{id}:#{timestamp}", (err, val) ->
-          if err then callback err
-          # likely the key was not found
-          # ta da!
-          callback null, val
+        # likely the key was not found
+        # ta da!
+        callback null, val
 
   get: (user_id, chart_id, timestamp, callback) ->
     db.get "metric:#{user_id}:#{chart_id}:#{timestamp}", (err, val) ->
@@ -75,8 +74,8 @@ module.exports = 
       x= JSON.stringify(x)
       callback null, x
 
-  remove: (id, timestamp, callback) ->
-    db.del "metric:#{id}:#{timestamp}", (err) ->
+  remove: (user_id,chart_id, timestamp, callback) ->
+    db.del "metric:#{user_id}:#{chart_id}:#{timestamp}", (err) ->
       if err then callback err
 
   batch: (metrics, callback) ->

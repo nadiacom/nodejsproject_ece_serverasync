@@ -17,6 +17,11 @@ mixin nav(name, id, style)
 mixin nav_item(href, active)
     li(class=active): a( href=href )
         block
+        
+mixin nav_item_login(href, active)
+    span.glyphicon.glyphicon-off(style='margin-left:20px;')
+    li(class=active, style='display: inline-block;margin-left:-8px;'): a( href=href )
+        block
 
 mixin nav_item_dropdown(href, active)
     li(class=["dropdown", active])

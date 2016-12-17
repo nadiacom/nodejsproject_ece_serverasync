@@ -18,12 +18,6 @@ text {
   shape-rendering: crispEdges;
 }
 
-form {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-
 .axis path,
 .axis line {
   fill: none;
@@ -80,4 +74,9 @@ form {
 }
 .bac{
   background-color: #E1E1E1;
+}
+#success_message{ display: none;}
+
+.form-group{
+  margin-right: 10px!important;
 }

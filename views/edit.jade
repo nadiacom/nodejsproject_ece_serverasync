@@ -1,0 +1,125 @@
+include mixins
+extends layout
+
+block append content
+  div.container
+    div#main
+    div.container
+      div.row
+        h3#title Chart n°#{pageData.chart_id}
+      div.row
+        div
+        table#metrics.table.table-striped
+          tr
+            th Timestamp
+            th Value
+            th
+      form#chart_form.well.form-horizontal.row(action='', method='post')
+          fieldset
+            h4 Enter a new value :
+            div.col-md-6
+              div.form-group
+                div#datetimepicker1.input-group.date
+                  input.form-control(type='text',name='timestamp',class="form-control",value='')
+                  span.input-group-addon
+                    span.glyphicon.glyphicon-calendar
+            div.col-md-4
+              div.form-group
+                div#value.input-group.date
+                  input.form-control(placeholder='Enter your value here',name='value',class="form-control",value='')
+            div.col-md-2
+              div.form-group
+                button.btn.btn-default(type='submit') OK
+          
+  script(type='text/javascript').
+    
+    //Remove metric
+    function remove(element) {
+      //Confirm dialog box
+      if (confirm("Are you sure you want the delete metric n° "+ element.parentNode.parentNode.rowIndex+" ?")) {
+        //Http request to app.delete '/:chart_id/:timestamp'
+        $.ajax({
+          url: '/'+#{pageData.chart_id}+'/'+element.parentNode.parentNode.cells[element.parentNode.cellIndex-2].textContent,
+          type: 'DELETE'
+      });
+      //Reload page
+      location.reload();
+      }
+    }
+    //Display metric timestamp and value on table
+    function DisplayMetrics(myData) {
+      for(i=0;i<myData.length;i++){
+        var table = document.getElementById("metrics");
+        var row = table.insertRow(1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = myData[i].timestamp;
+        cell2.innerHTML = myData[i].value;
+        cell3.innerHTML = '<button type="button" class="btn btn-default btn-sm" onclick="remove(this)" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>';
+      }
+      
+    }
+    // Get metrics from levelDB
+    $.getJSON("/my_many_metrics/"+#{pageData.chart_id}, {}, function(data) {
+    myData = JSON.parse(JSON.parse(data));
+    //Call display function
+    DisplayMetrics(myData);
+    return myData;
+    });
+    
+    $(document).ready(function() {
+      //Display datepicker
+    $('#datetimepicker1').datetimepicker({
+    format: 'YYYY-MM-DD'
+    });
+     //Validate function for form fields
+    $('#chart_form').bootstrapValidator({
+    feedbackIcons: {
+        valid: 'glyphicon glyphicon-ok',
+        invalid: 'glyphicon glyphicon-remove',
+        validating: 'glyphicon glyphicon-refresh'
+    },
+    fields: {
+        the_date: {
+            validators: {
+                    stringLength: {
+                    min: 10,
+                },
+                    notEmpty: {
+                    message: 'Please enter or pick up a date using the calendar'
+                },
+                    date: {
+                            format: 'YYYY-MM-DD',
+                            message: 'Please enter a date with the following format : YYYY-MM-DD'
+                }
+            }
+        },
+         the_value: {
+            validators: {
+                notEmpty: {
+                    message: 'Please supply a value'
+                }
+            }
+        }
+        }
+    })
+    .on('success.form.bv', function(e) {
+        $('#success_message').slideDown({ opacity: "show" }, "slow") // Do something ...
+            $('#chart_form').data('bootstrapValidator').resetForm();
+        // Prevent form submission
+        e.preventDefault();
+        // Get the form instance
+        var $form = $(e.target);
+        // Get the BootstrapValidator instance
+        var bv = $form.data('bootstrapValidator');
+        // Use Ajax to submit form data
+        $.post($form.attr('action'), $form.serialize(), function(result) {
+            console.log(result);
+        }, 'json');
+    });
+    //Reload table on submit new value
+    document.getElementById("chart_form").onsubmit = function(){
+      location.reload(true);
+    }
+    });

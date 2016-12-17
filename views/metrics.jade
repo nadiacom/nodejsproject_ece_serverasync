@@ -3,6 +3,8 @@ extends layout
 
 block append content
   div.container
+    +panel("Hello, welcome on your dashboard !") Visualize your own metrics on charts. Add and remove some metrics by clicking on edit button.
+    +button("info", "info.html", "small") Add a new chart
     div#main
     
   script.
@@ -16,16 +18,16 @@ block append content
       return data;
     });
     
+    //Dynamically display charts    
     function append_charts() {
       for(i=1;i<=nb_charts;i++){
-        // Append charts elements
-        $("div#main").append('<div class="col-md-6"><h3 class="center">chart '+i+'</h3><div id="chart'+i+'"></div></div>');
+        // Append DOM elements
+        $("div#main").append('<div class="col-md-6"><h3 class="center">chart '+i+'</h3><div id="chart'+i+'"></div><form action="edit/'+i+'" method="get"><button type= "submit" id="singlebutton" class="btn center-block">Edit metrics</button></form></div>');
         // GetJSON : load data for METRICS
         (function(i) { // protects i in an immediately called function
           $.getJSON("/my_many_metrics/"+i, {}, function(data) {
-            //console.log(data);
             myData = JSON.parse(JSON.parse(data));
-            // Draw chart
+            // Draw charts
             DrawChart("chart"+i);
             return myData;
             });

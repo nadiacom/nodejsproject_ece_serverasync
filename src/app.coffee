@@ -25,6 +25,7 @@ app.use '/public', express.static "#{__dirname}/../public"
 app.use '/styles', express.static "#{__dirname}/../styles"
 # Get node_modules/...
 app.use '/node_modules', express.static "#{__dirname}/../node_modules"
+app.use '/views', express.static "#{__dirname}/../views"
 
 #Posting metrics :  body-parser to parse the request’s body
 app.use bodyParser.json()
@@ -80,29 +81,25 @@ app.post '/metrics', (req, res) -> 
     throw err if err
     res.json value
 
+#HOME PAGE
+app.get '/edit/:chart_id', (req, res) -> 
+  chart_id = req.params.chart_id
+  res.render 'edit', {pageData: {chart_id : ''+chart_id}}
+
+app.post '/edit/:chart_id', (req, res) ->
+  chart_id = req.params.chart_id
+  console.log req.body
+  metrics.put 1,chart_id, req.body, (err, value) -> 
+    throw err  if err
+    res.json value
+
+
 app.put '/', (req, res) -> 
   # PUT
 
-app.delete '/', (req, res) -> 
+app.delete '/:chart_id/:timestamp', (req, res) -> 
   # DELETE
-
-
-
-# Without Express : OLD
-# Declare an http server
-# http.createServer (req, res) ->
-
-#  path = url.parse(req.url).pathname
-
-#  user.get "cesar", (id) ->
-    # Write a response header
-#    res.writeHead 200,
-#      'Content-Type': 'text/plain'
-
-    # Write a response content
-    #res.end('Hello World\n');`
-#    res.end "hello #{id}" # "hello" + id
-
-# Start the server
-# .listen 1337, '127.0.0.1', () ->
-#  console.log "running on 127.0.0.1:1337"
+  chart_id = req.params.chart_id
+  timestamp = req.params.timestamp
+  metrics.remove 1,chart_id,timestamp, req.body, (err) -> 
+    throw err  if err
