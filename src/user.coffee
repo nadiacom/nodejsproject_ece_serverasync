@@ -15,6 +15,7 @@ module.exports =
       callback null, user
 
   save: (username, password, callback) ->
+    console.log username
     db.put "user:#{username}", password, (err) ->
       if err then callback err
       # some kind of I/O error

@@ -23,6 +23,8 @@ app.set 'view engine', 'jade'
 # Make it sexy ! bootstrap css & jquery js links
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
+# Get /public/..
+app.use '/public/css', express.static "#{__dirname}/../public/css"
 
 # Get /styles/..
 app.use '/styles', express.static "#{__dirname}/../styles"
@@ -131,6 +133,7 @@ app.get '/login', (req, res) ->
 
 app.post '/login', (req, res) ->
   user.get req.body.username, (err, data) ->
+    console.log  data
     return next err if err
     unless data.password == req.body.password
       res.redirect '/login'
@@ -144,7 +147,15 @@ app.get '/logout', (req, res) ->
   delete req.session.username
   res.redirect '/login'
 
+app.get '/signup', (req, res) ->
+  res.render 'signup'
+
 app.post '/signup', (req, res) ->
+  console.log req.body.username+req.body.password
+  # Save new user on leveldb
   user.save req.body.username,req.body.password, (err, value) -> 
     throw err  if err
-    res.json value
+    # Open session
+    req.session.loggedIn = true
+    req.session.username = req.body.username
+    res.redirect '/'

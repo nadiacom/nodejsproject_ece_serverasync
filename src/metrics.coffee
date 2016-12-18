@@ -7,16 +7,8 @@ util = require 'util'
 
 module.exports = 
 
-  get_test: (callback) -> 
-    callback null, [
-      timestamp:(new Date '2013-11-04 14:00 UTC').getTime(), value:12 
-    ,
-        timestamp:(new Date '2013-11-04 14:30 UTC').getTime(), value:15 
-    ]
-
   put: (user_id, chart_id, metrics, callback) ->
     {timestamp, value} = metrics
-    console.log "bonbon:"+ timestamp, value
     db.put "metric:#{user_id}:#{chart_id}:#{timestamp}", value, (err) ->
       if err then callback err
       # some kind of I/O error
@@ -45,7 +37,6 @@ module.exports = 
         arr.push(z)
     stream.on 'close', ->
       max = Math.max.apply(Math, arr)
-      console.log max
       callback null, max
 
   # Get metrics for specific chart
@@ -54,11 +45,9 @@ module.exports = 
     y =''
     stream = db.createReadStream()
     stream.on 'data', (val) ->
-      console.log val.key
       username = val.key.split(":")[1]
       chart = val.key.split(":")[2]
       if username == user_id && chart == chart_id
-        console.log val.value
         z = val.key.split ':'
         z = z[3]
         y = val.value
@@ -77,19 +66,3 @@ module.exports = 
     db.batch metrics, (err) ->
       if err then callback err
       callback null, "batch done !"
-
-
-  save: (id, metrics, callback) -> 
-    console.log "heyy"
-    console.log metrics.length
-    console.log util.inspect(metrics, false, null)
-    #ws = db.createWriteStream() 
-    #ws.on 'error', callback 
-    #ws.on 'close', callback 
-    for metric in metrics 
-      console.log "heyy"
-
-
-      #{timestamp, value} = metric
-      #ws.write key: "metric:#{id}:#{timestamp}", value: value 
-    #ws.end()

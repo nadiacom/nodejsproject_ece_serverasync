@@ -7,6 +7,9 @@ body {
 .container{
   width: 100%;
 }
+.forms{
+  width: 80%;
+}
 text {
   font: 10px sans-serif;
 }
@@ -85,31 +88,32 @@ text {
   margin-bottom: 80px;
 }
 
-.form-signin {
-  max-width: 380px;
-  padding: 15px 35px 45px;
-  margin: 0 auto;
-  background-color: #fff;
-  border: 1px solid rgba(0,0,0,0.1);
 
-  .form-signin-heading,
-	.checkbox {
-	  margin-bottom: 30px;
-	}
+/* BS3 using input group icons from Font-Awesome 3.2.1 */
 
-	.checkbox {
-	  font-weight: normal;
-	}
+/* no need for any margin/padding for headings when using WELL */
+.well h3 {
+    padding-top: 0;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+#signupForm .input-group {
+    margin-bottom: 20px;
+}
 
-	.form-control {
-	  position: relative;
-	  font-size: 16px;
-	  height: auto;
-	  padding: 10px;
-		@include box-sizing(border-box);
+#login .input-group {
+    margin-bottom: 20px;
+}
 
-		&:focus {
-		  z-index: 2;
-		}
-	}
+/* get font-awesome to work with BS3 */
+.input-group-addon .icon-2x {
+    width: 28px;
+    min-width: 28px;
+    display: inline-block;
+}
+
+.inline-block > li {
+    position: relative;
+    display: inline-block;
+    margin: 0 10px 10px 0;
 }
