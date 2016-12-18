@@ -39,7 +39,7 @@ block append content
       if (confirm("Are you sure you want the delete metric n° "+ element.parentNode.parentNode.rowIndex+" ?")) {
         //Http request to app.delete '/:chart_id/:timestamp'
         $.ajax({
-          url: '/'+#{username}+"/"+#{pageData.chart_id}+'/'+element.parentNode.parentNode.cells[element.parentNode.cellIndex-2].textContent,
+          url: '/'+'#{username}'+"/"+#{pageData.chart_id}+'/'+element.parentNode.parentNode.cells[element.parentNode.cellIndex-2].textContent,
           type: 'DELETE'
       });
       //Reload page
@@ -61,7 +61,7 @@ block append content
       
     }
     // Get metrics from levelDB
-    $.getJSON("/my_many_metrics/"+#{pageData.chart_id}, {}, function(data) {
+    $.getJSON("/my_many_metrics/"+'#{username}'+"/"+#{pageData.chart_id}, {}, function(data) {
     myData = JSON.parse(JSON.parse(data));
     //Call display function
     DisplayMetrics(myData);
