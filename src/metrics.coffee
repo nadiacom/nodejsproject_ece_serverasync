@@ -28,6 +28,7 @@ module.exports = 
   # Get the number of charts for specific user
   getNbChart: (user_id, callback) ->
     arr = []
+    max = 0
     stream = db.createReadStream()
     stream.on 'data', (val) ->
       username = val.key.split(":")[1]
@@ -36,7 +37,8 @@ module.exports = 
         z = z[2]
         arr.push(z)
     stream.on 'close', ->
-      max = Math.max.apply(Math, arr)
+      if arr.length != 0
+        max = Math.max.apply(Math, arr)
       callback null, max
 
   # Get metrics for specific chart
@@ -47,6 +49,7 @@ module.exports = 
     stream.on 'data', (val) ->
       username = val.key.split(":")[1]
       chart = val.key.split(":")[2]
+      console.log val
       if username == user_id && chart == chart_id
         z = val.key.split ':'
         z = z[3]

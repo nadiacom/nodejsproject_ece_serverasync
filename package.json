@@ -21,6 +21,7 @@
     "body-parser": "^1.15.2",
     "coffee-script": "^1.11.1",
     "d3": "3",
+    "bootstrap": "*",
     "express": "^4.14.0",
     "istanbul": "^0.4.5",
     "jade": "^1.11.0",
@@ -29,7 +30,13 @@
     "level-ws": "0.0.1",
     "leveldown": "^1.5.0",
     "levelup": "^1.3.3",
-    "mocha": "^3.1.2"
+    "level": "*",
+    "mocha": "^3.1.2",
+    "morgan": "*",
+    "express-session": "*",
+    "level-session-store": "*",
+    "express-sessions": "*",
+    "middleware": "*"
   },
   "devDependencies": {
     "istanbul": "^0.4.5"
