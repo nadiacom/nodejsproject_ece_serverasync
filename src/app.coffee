@@ -57,8 +57,10 @@ app.get '/hello/:name', (req, res) -> 
 # Get readStream from db
 app.get '/my_many_metrics/:user_id/:chart_id', (req, res) ->
   chart_id = req.params.chart_id.toString()
+  user_id = req.params.user_id.toString()
   metrics.readStream user_id,chart_id, (err, data) ->
     throw next err if err
+    console.log data
     res.status(200).json data
 
 # Get readStream from db
@@ -94,8 +96,8 @@ app.get '/edit/:chart_id', (req, res) -> 
   chart_id = req.params.chart_id
   res.render 'edit', {pageData: {chart_id : ''+chart_id}}
 
-app.post '/edit/:user_id/:chart_id', (req, res) ->
-  user_id = req.params.user_id
+app.post '/edit/:chart_id', (req, res) ->
+  user_id = req.session.username
   chart_id = req.params.chart_id
   metrics.put user_id,chart_id, req.body, (err, value) -> 
     throw err  if err
@@ -141,8 +143,6 @@ app.post '/signup', (req, res) ->
   user.save req.body.username,req.body.password, (err, value) -> 
     throw err  if err
     # Open session
-    delete req.session.loggedIn
-    delete req.session.username
     req.session.loggedIn = true
     req.session.username = req.body.username
     res.redirect '/'
