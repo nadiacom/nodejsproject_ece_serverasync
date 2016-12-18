@@ -4,14 +4,14 @@ extends layout
 block append content
   div.container
     +panel("Hello, welcome on your dashboard !") Visualize your own metrics on charts. Add and remove some metrics by clicking on edit button.
-    a.btn.btn-info.btn-sm(type='button',href = '/edit/#{pageData.new_chart}') Add a new chart
+    a.btn.btn-info.btn-sm(type='button',href = '/edit/#{username}/#{pageData.new_chart}') Add a new chart
     div#main
 
   script.
     var nb_charts = 0;
     var myData = [{'timestamp':'2013-01-09','value':'12'},{'timestamp':'2013-01-10', 'value':'28'}];
     
-    $.getJSON("/nb_charts.json", {}, function(data) {
+    $.getJSON("/nb_charts/"+'#{username}', {}, function(data) {
       console.log(data);
       nb_charts = data;
       append_charts();
@@ -25,7 +25,7 @@ block append content
         $("div#main").append('<div class="col-md-6"><h3 class="center">chart '+i+'</h3><div id="chart'+i+'"></div><form action="edit/'+i+'" method="get"><button type= "submit" id="singlebutton" class="btn center-block">Edit metrics</button></form></div>');
         // GetJSON : load data for METRICS
         (function(i) { // protects i in an immediately called function
-          $.getJSON("/my_many_metrics/"+i, {}, function(data) {
+          $.getJSON("/my_many_metrics/"+'#{username}'+"/"+i, {}, function(data) {
             myData = JSON.parse(JSON.parse(data));
             // Draw charts
             DrawChart("chart"+i);

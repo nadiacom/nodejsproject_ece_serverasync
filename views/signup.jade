@@ -13,7 +13,7 @@ block content
             .well.well-lg
               .row
                 .col-xs-12
-                  form#signupForm(method='POST', action='/signup', accept-charset='UTF-8')
+                  form#signupForm(action='/signup', method="post", accept-charset='UTF-8')
                     fieldset
                       .input-group
                         span.input-group-addon
@@ -28,12 +28,12 @@ block content
                           i.fa.fa-asterisk(aria-hidden='true')
                         input#confirmPassword.form-control.input-lg(placeholder='Confirm Password', required='required', maxlength='60', type='password', name='confirmPassword')
                       .form-group
-                        button#btn-signup.btn.btn-block.btn-primary.btn-lg(type='submit') Sign Up
+                        button#btn-signup.btn.btn-block.btn-primary.btn-lg(type='submit') Login
                     .form-group
                       .topCushion
                         | Already a member? 
                         a(href='/login') Login
-                    
+                        
   script.
     $('#signupForm').bootstrapValidator({
     feedbackIcons: {
@@ -42,28 +42,15 @@ block content
         validating: 'glyphicon glyphicon-refresh'
     },
     fields: {
-      password: {
+      confirmPassword: {
                 validators: {
                     identical: {
-                        field: 'confirmPassword',
+                        field: 'password',
                         message: 'The password and its confirm are not the same'
                     }
                 }
             }
         }
-    })
-    .on('success.form.bv', function(e) {
-        $('#success_message').slideDown({ opacity: "show" }, "slow") // Do something ...
-            $('#signupForm').data('bootstrapValidator').resetForm();
-        // Prevent form submission
-        e.preventDefault();
-        // Get the form instance
-        var $form = $(e.target);
-        // Get the BootstrapValidator instance
-        var bv = $form.data('bootstrapValidator');
-        // Use Ajax to submit form data
-        $.post($form.attr('action'), $form.serialize(), function(result) {
-            console.log(result);
-        }, 'json');
     });
-                      
+    
+  

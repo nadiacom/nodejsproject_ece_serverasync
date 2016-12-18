@@ -54,32 +54,18 @@ app.listen app.get('port'), () ->
 app.get '/hello/:name', (req, res) -> 
   res.send "Hello #{req.params.name}"
 
-# Expose the metrics on the back-end
-app.get '/metrics.json', (req, res) ->
-  metrics.get_test (err, data) ->
-    throw next err if err
-    res.status(200).json data
-
-# Get metrics from db
-app.get '/my_metrics.json', (req, res) ->
-  metrics.get 'nadia','nadia','2016-01-09', (err, data) ->
-    throw next err if err
-    res.status(200).json data
-
 # Get readStream from db
-app.get '/my_many_metrics/:chart_id', (req, res) ->
+app.get '/my_many_metrics/:user_id/:chart_id', (req, res) ->
   chart_id = req.params.chart_id.toString()
-  console.log "hey"+ chart_id
-  metrics.readStream 'nadia',chart_id, (err, data) ->
+  metrics.readStream user_id,chart_id, (err, data) ->
     throw next err if err
-    console.log 'test final: '+data+' '
     res.status(200).json data
 
 # Get readStream from db
-app.get '/nb_charts.json', (req, res) ->
-  metrics.getNbChart 'nadia', (err, data) ->
+app.get '/nb_charts/:user_id', (req, res) ->
+  user_id = req.params.user_id.toString()
+  metrics.getNbChart user_id, (err, data) ->
     throw next err if err
-    console.log 'test : '+data+' '
     res.status(200).json data
 
 # Check if user is already connected (session)
@@ -92,15 +78,13 @@ authCheck = (req, res, next) ->
 # HOME PAGE
 app.get '/', authCheck, (req, res) -> 
   # Get number of charts
-  metrics.getNbChart 'nadia', (err, data) ->
+  metrics.getNbChart req.session.username, (err, data) ->
     throw next err if err
-    console.log 'test : '+data+' '
     # Set app.locals function, which acts as an object you can store values or functions in, and then makes them available to views
     req.app.locals.username = req.session.username
     res.render 'index', {pageData: { new_chart:''+(data+1)*1}}
 
 app.post '/', (req, res) -> 
-  console.log req.body
   metrics.batch req.body, (err, value) ->
     throw err if err
     res.json value
@@ -110,10 +94,10 @@ app.get '/edit/:chart_id', (req, res) -> 
   chart_id = req.params.chart_id
   res.render 'edit', {pageData: {chart_id : ''+chart_id}}
 
-app.post '/edit/:chart_id', (req, res) ->
+app.post '/edit/:user_id/:chart_id', (req, res) ->
+  user_id = req.params.user_id
   chart_id = req.params.chart_id
-  console.log req.body
-  metrics.put 1,chart_id, req.body, (err, value) -> 
+  metrics.put user_id,chart_id, req.body, (err, value) -> 
     throw err  if err
     res.json value
 
@@ -121,11 +105,12 @@ app.post '/edit/:chart_id', (req, res) ->
 app.put '/', (req, res) -> 
   # PUT
 
-app.delete '/:chart_id/:timestamp', (req, res) -> 
+app.delete '/:user_id/:chart_id/:timestamp', (req, res) -> 
   # DELETE
+  user_id = req.params.user_id
   chart_id = req.params.chart_id
   timestamp = req.params.timestamp
-  metrics.remove 1,chart_id,timestamp, req.body, (err) -> 
+  metrics.remove user_id,chart_id,timestamp, req.body, (err) -> 
     throw err  if err
 
 app.get '/login', (req, res) ->
@@ -156,6 +141,14 @@ app.post '/signup', (req, res) ->
   user.save req.body.username,req.body.password, (err, value) -> 
     throw err  if err
     # Open session
+    delete req.session.loggedIn
+    delete req.session.username
     req.session.loggedIn = true
     req.session.username = req.body.username
     res.redirect '/'
+
+app.get '/test', (req, res) ->
+  json1 = JSON.stringify('{ timestamp: 2016-01-09, value: 10}')
+  metrics.put "nadia", "1", json1, (err, data) ->
+    throw err  if err
+    res.json data
