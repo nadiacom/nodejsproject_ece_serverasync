@@ -60,7 +60,7 @@ app.get '/metrics.json', (req, res) ->
 
 # Get metrics from db
 app.get '/my_metrics.json', (req, res) ->
-  metrics.get '1','1','2016-01-09', (err, data) ->
+  metrics.get 'nadia','nadia','2016-01-09', (err, data) ->
     throw next err if err
     res.status(200).json data
 
@@ -68,14 +68,14 @@ app.get '/my_metrics.json', (req, res) ->
 app.get '/my_many_metrics/:chart_id', (req, res) ->
   chart_id = req.params.chart_id.toString()
   console.log "hey"+ chart_id
-  metrics.readStream '1',chart_id, (err, data) ->
+  metrics.readStream 'nadia',chart_id, (err, data) ->
     throw next err if err
     console.log 'test final: '+data+' '
     res.status(200).json data
 
 # Get readStream from db
 app.get '/nb_charts.json', (req, res) ->
-  metrics.getNbChart '1', (err, data) ->
+  metrics.getNbChart 'nadia', (err, data) ->
     throw next err if err
     console.log 'test : '+data+' '
     res.status(200).json data
@@ -90,7 +90,7 @@ authCheck = (req, res, next) ->
 # HOME PAGE
 app.get '/', authCheck, (req, res) -> 
   # Get number of charts
-  metrics.getNbChart '1', (err, data) ->
+  metrics.getNbChart 'nadia', (err, data) ->
     throw next err if err
     console.log 'test : '+data+' '
     # Set app.locals function, which acts as an object you can store values or functions in, and then makes them available to views

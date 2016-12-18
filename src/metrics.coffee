@@ -6,15 +6,6 @@ d3 = require 'd3'
 util = require 'util'
 
 module.exports = 
-  ###
-    `get(callback)` 
-    ——————— 
-    returns some hard-coded metrics 
-
-    `callback`: callback function
-  ###
-
-
 
   get_test: (callback) -> 
     callback null, [
@@ -47,7 +38,8 @@ module.exports = 
     arr = []
     stream = db.createReadStream()
     stream.on 'data', (val) ->
-      if val.key.substring(0, 9) == 'metric:' + user_id + ':'
+      username = val.key.split(":")[1]
+      if username == user_id
         z = val.key.split ':'
         z = z[2]
         arr.push(z)
@@ -63,7 +55,9 @@ module.exports = 
     stream = db.createReadStream()
     stream.on 'data', (val) ->
       console.log val.key
-      if val.key.substring(0, 10) == 'metric:' + user_id + ':'+chart_id
+      username = val.key.split(":")[1]
+      chart = val.key.split(":")[2]
+      if username == user_id && chart == chart_id
         console.log val.value
         z = val.key.split ':'
         z = z[3]
