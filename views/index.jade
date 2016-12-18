@@ -3,31 +3,118 @@ extends layout
 
 block append content
   div.container
-    div.col-md-6.col-md-offset-3
-      p hello world ! 
-      p
-      button(type="button" class="btn btn-success" id="show-metrics") Bring the metrics 
-      #metrics
+    +panel("Hello, welcome on your dashboard !") Visualize your own metrics on charts. Add and remove some metrics by clicking on edit button.
+    a.btn.btn-info.btn-sm(type='button',href = '/edit/#{pageData.new_chart}') Add a new chart
+    div#main
 
-  script
-    :coffee-script
-      $('#show-metric').click (e) ->
-        e.preventDefault()
-        $.getJSON "/metrics.json", {}, (data) ->
-          content = ""
-          for d in data
-            content += "timestamp: #{d.timestamp}, value: #{d.value}"
-            $('#metrics').append content
-      
-      $('#show-metric').click (e) ->
-        e.preventDefault()
-        $.getJSON "/my_metrics.json", {}, (data) ->
-          content = ""
-          content += data
-          $('#metrics').append content
-          
-      $('#show-metrics').click (e) ->
-        e.preventDefault()
-        $.getJSON "/my_many_metrics.json", {}, (data) ->
-          content = 'test :'+data + ' '
-          $('#metrics').append content
+  script.
+    var nb_charts = 0;
+    var myData = [{'timestamp':'2013-01-09','value':'12'},{'timestamp':'2013-01-10', 'value':'28'}];
+    
+    $.getJSON("/nb_charts.json", {}, function(data) {
+      console.log(data);
+      nb_charts = data;
+      append_charts();
+      return data;
+    });
+    
+    //Dynamically display charts    
+    function append_charts() {
+      for(i=1;i<=nb_charts;i++){
+        // Append DOM elements
+        $("div#main").append('<div class="col-md-6"><h3 class="center">chart '+i+'</h3><div id="chart'+i+'"></div><form action="edit/'+i+'" method="get"><button type= "submit" id="singlebutton" class="btn center-block">Edit metrics</button></form></div>');
+        // GetJSON : load data for METRICS
+        (function(i) { // protects i in an immediately called function
+          $.getJSON("/my_many_metrics/"+i, {}, function(data) {
+            myData = JSON.parse(JSON.parse(data));
+            // Draw charts
+            DrawChart("chart"+i);
+            return myData;
+            });
+        })(i);
+      }
+    }
+    
+    function DrawChart(chart) {
+    var margin = {top: 40, right: 20, bottom: 30, left: 40},
+        width = 450 - margin.left - margin.right,
+        height = 300 - margin.top - margin.bottom;
+        
+        // Parse the date / time
+    var	parseDate = d3.time.format("%Y-%m-%d").parse;
+    
+    var x = d3.scale.ordinal()
+        .rangeRoundBands([0, width], .1);
+    
+    var y = d3.scale.linear()
+        .range([height, 0]);
+    
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(d3.time.format("%Y-%m-%d"));
+    
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+    
+    var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d) {
+        return "<strong>Value:</strong> <span style='color:red'>" + d.value + "</span>";
+      })
+    
+    var svg = d3.select("div#"+chart).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    
+    svg.call(tip);
+    
+    console.log(myData);
+
+    function draw(data) {
+      data.forEach(function(d) {
+        d.timestamp = parseDate(d.timestamp);
+        d.value = +d.value;
+      });
+    
+      x.domain(data.map(function(d) { return d.timestamp; }));
+      y.domain([0, d3.max(data, function(d) { return d.value; })]);
+    
+      svg.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis);
+    
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text("Value");
+    
+      svg.selectAll(".bar")
+          .data(data)
+        .enter().append("rect")
+          .attr("class", "bar")
+          .attr("x", function(d) { return x(d.timestamp); })
+          .attr("width", x.rangeBand())
+          .attr("y", function(d) { return y(d.value); })
+          .attr("height", function(d) { return height - y(d.value); })
+          .on('mouseover', tip.show)
+          .on('mouseout', tip.hide)
+    };
+
+    draw(myData);
+    }
+    
+    function type(d) {
+      d.value = +d.value;
+      return d;
+    }

@@ -1,6 +1,6 @@
 levelup = require 'levelup'
 levelws = require 'level-ws'
-db = levelws levelup "db"
+db = levelws levelup "#{__dirname}/../db/metrics"
 d3 = require 'd3'
 
 util = require 'util'
@@ -77,6 +77,7 @@ module.exports = 
   remove: (user_id,chart_id, timestamp, callback) ->
     db.del "metric:#{user_id}:#{chart_id}:#{timestamp}", (err) ->
       if err then callback err
+      callback null, "success"
 
   batch: (metrics, callback) ->
     db.batch metrics, (err) ->

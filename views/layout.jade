@@ -21,8 +21,8 @@ html(lang="en")
     block content
       +nav("ECE Node js project", "dropdown_menu")
         +nav_item( "/metrics", "active" ) Dashboard
-        +nav_item_dropdown( "#" )( label="username" )
-          +nav_item_login( "#" ) Signout
+        +nav_item_dropdown( "#" )( label="#{username}" )
+          +nav_item_login( "/logout" ) Signout
           +nav_divider
           +nav_header Soon
           +nav_item( "#" ) Edit my profile
