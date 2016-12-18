@@ -146,9 +146,3 @@ app.post '/signup', (req, res) ->
     req.session.loggedIn = true
     req.session.username = req.body.username
     res.redirect '/'
-
-app.get '/test', (req, res) ->
-  json1 = JSON.stringify('{ timestamp: 2016-01-09, value: 10}')
-  metrics.put "nadia", "1", json1, (err, data) ->
-    throw err  if err
-    res.json data
