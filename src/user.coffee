@@ -1,6 +1,6 @@
 levelup = require 'levelup'
 levelws = require 'level-ws'
-db = levelws levelup './db/users'
+db = levelws levelup __dirname+'/../db/users'
 
 module.exports =
   get: (username, callback) ->
