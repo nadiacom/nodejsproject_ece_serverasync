@@ -17,14 +17,14 @@ LevelStore = require('level-session-store')(session)
 app.set 'port', 1337  
 
 # set views
-app.set 'views', "./../views" 
+app.set 'views', "#{__dirname}/../views" 
 app.set 'view engine', 'jade'
 
 # Make it sexy ! bootstrap css & jquery js links
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
 # Get /db/..
-app.use '/db', express.static "#{__dirname}/../db"
+app.use '../db', express.static "#{__dirname}/../db"
 
 # Get /styles/..
 app.use '/styles', express.static "#{__dirname}/../styles"
