@@ -24,7 +24,7 @@ app.set 'view engine', 'jade'
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
 # Get /db/..
-app.use '/../db', express.static "#{__dirname}/../db"
+app.use '/db', express.static "#{__dirname}/../db"
 
 # Get /styles/..
 app.use '/styles', express.static "#{__dirname}/../styles"

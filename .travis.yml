@@ -1,16 +1,5 @@
 language: node_js
 node_js:
   - "4.6"
-before_install:
-  - npm install --save-dev mocha
-  - npm install mocha
-  - npm install should
-  - npm install --save coffee-script
-  - npm install express --save
-  - npm install nodemon
-  - npm install bootstrap
-  - npm install --save levelup leveldown level-ws
-  - npm i --save body-parser
-  - npm install d3
 install: npm install
 before_script: coffee --compile --output lib/ src/
