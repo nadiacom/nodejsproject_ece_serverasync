@@ -50,10 +50,7 @@ app.use session
 app.listen app.get('port'), () ->
   console.log "server listening on #{app.get 'port'}"
 
-# Adding parameters in the routes
-app.get '/hello/:name', (req, res) -> 
-  res.send "Hello #{req.params.name}"
-
+# URL UTILS
 # Get readStream from db
 app.get '/my_many_metrics/:user_id/:chart_id', (req, res) ->
   chart_id = req.params.chart_id.toString()
@@ -78,35 +75,14 @@ authCheck = (req, res, next) ->
     next()
 
 # HOME PAGE
+# Render views
 app.get '/', authCheck, (req, res) -> 
   # Get number of charts
   metrics.getNbChart req.session.username, (err, data) ->
     throw next err if err
-    # Set app.locals function, which acts as an object you can store values or functions in, and then makes them available to views
-    req.app.locals.username = req.session.username
     res.render 'index', {pageData: { new_chart:''+(data+1)*1}}
 
-app.post '/', (req, res) -> 
-  metrics.batch req.body, (err, value) ->
-    throw err if err
-    res.json value
-
-#HOME PAGE
-app.get '/edit/:chart_id', (req, res) -> 
-  chart_id = req.params.chart_id
-  res.render 'edit', {pageData: {chart_id : ''+chart_id}}
-
-app.post '/edit/:chart_id', (req, res) ->
-  user_id = req.session.username
-  chart_id = req.params.chart_id
-  metrics.put user_id,chart_id, req.body, (err, value) -> 
-    throw err  if err
-    res.json value
-
-
-app.put '/', (req, res) -> 
-  # PUT
-
+# Handling delete request
 app.delete '/:user_id/:chart_id/:timestamp', (req, res) -> 
   # DELETE
   user_id = req.params.user_id
@@ -115,9 +91,26 @@ app.delete '/:user_id/:chart_id/:timestamp', (req, res) -> 
   metrics.remove user_id,chart_id,timestamp, req.body, (err) -> 
     throw err  if err
 
+# EDIT CHART PAGE
+# Render view
+app.get '/edit/:chart_id', (req, res) -> 
+  chart_id = req.params.chart_id
+  res.render 'edit', {pageData: {chart_id : ''+chart_id}}
+
+# Handling post requests : adding, removing metrics
+app.post '/edit/:chart_id', (req, res) ->
+  user_id = req.session.username
+  chart_id = req.params.chart_id
+  metrics.put user_id,chart_id, req.body, (err, value) -> 
+    throw err  if err
+    res.json value
+
+# LOGIN PAGE
+# Render view
 app.get '/login', (req, res) ->
   res.render 'login'
 
+# Handling post request : authentification
 app.post '/login', (req, res) ->
   user.get req.body.username, (err, data) ->
     console.log  data
@@ -127,16 +120,22 @@ app.post '/login', (req, res) ->
     else
       req.session.loggedIn = true
       req.session.username = data.username
+      # Set app.locals function, which acts as an object you can store values or functions in, and then makes them available to views
+      req.app.locals.username = req.session.username
       res.redirect '/'
 
+# LOGOUT
 app.get '/logout', (req, res) ->
   delete req.session.loggedIn
   delete req.session.username
   res.redirect '/login'
 
+# SIGNUP PAGE
+# Render view
 app.get '/signup', (req, res) ->
   res.render 'signup'
 
+# Handling post request : subscription
 app.post '/signup', (req, res) ->
   console.log req.body.username+req.body.password
   # Save new user on leveldb
@@ -145,4 +144,18 @@ app.post '/signup', (req, res) ->
     # Open session
     req.session.loggedIn = true
     req.session.username = req.body.username
+    # Set app.locals function, which acts as an object you can store values or functions in, and then makes them available to views
+    req.app.locals.username = req.session.username
+    # Redirect to batch metrics submission
+    res.redirect '/signup/batch'
+
+app.get '/signup/batch', (req, res) ->
+  res.render 'batch'
+
+# Handling post request : put many metrics (batch) on subscription
+app.post '/signup/batch', (req, res) -> 
+  console.log req.body.data
+  metrics.batch req.body.data, (err, value) ->
+    throw err if err
+    # Redirect to dashboard
     res.redirect '/'

@@ -2,8 +2,8 @@ include mixins
 extends layout
 
 block append content
-  div.container
-    +panel("Hello, welcome on your dashboard !") Visualize your own metrics on charts. Add and remove some metrics by clicking on edit button.
+  div.main.container
+    +panel("Hello, welcome on your dashboard !") Visualize your own metrics on charts. Add and remove some metrics by clicking on edit button. Add a new chart.
     a.btn.btn-info.btn-sm(type='button',href = '/edit/#{pageData.new_chart}') Add a new chart
     div#main
 
@@ -37,8 +37,8 @@ block append content
     
     function DrawChart(chart) {
     var margin = {top: 40, right: 20, bottom: 30, left: 40},
-        width = 450 - margin.left - margin.right,
-        height = 300 - margin.top - margin.bottom;
+        width = 410 - margin.left - margin.right,
+        height = 280 - margin.top - margin.bottom;
         
         // Parse the date / time
     var	parseDate = d3.time.format("%Y-%m-%d").parse;

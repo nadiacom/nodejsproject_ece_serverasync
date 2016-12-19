@@ -1,0 +1,85 @@
+include mixins
+extends layout
+
+block append content
+  +panel("Hello, welcome on app !") Add your first metrics using the form bellow, and click on display button to display them on your dashboard.
+  div.main.container
+    div.row
+      h3#title Chart n°1
+    div.row
+      div
+      table#metrics.table.table-striped
+        tr
+          th Timestamp
+          th Value
+          th
+    form#chart_form.well.form-horizontal.row(action='', method='post')
+        fieldset
+          h4 Enter a new value :
+          div.col-md-6
+            div.form-group
+              div#datetimepicker1.input-group.date
+                input#timestamp.form-control(type='text',name='timestamp',class="form-control",value='',required='')
+                span.input-group-addon
+                  span.glyphicon.glyphicon-calendar
+          div.col-md-4
+            div.form-group
+              div.input-group.date
+                input#value.form-control(placeholder='Enter your value here',name='value',class="form-control",value='',type='number',required='')
+          div.col-md-2
+            div.form-group
+              button.btn.btn-default(onclick="addMetric()") OK
+      div.row
+        div.form-group(style="text-align:center")
+          button.btn.btn-default(onclick="submitBatch()") Display values on chart
+          
+  script(type='text/javascript'). 
+    function addMetric() {
+      if($('#timestamp').val().length!=0 && $('#value').val().length!=0){
+        $('#metrics').show();
+        row = {"timestamp":$('#timestamp').val(),"value":$('#value').val()};
+        data = {"type":"put","key":"metric:"+'#{username}'+":1:"+$('#timestamp').val(),"value":$('#value').val()};
+        myData.push(data);
+        $('#timestamp').val('');
+        $('#value').val('');
+        DisplayMetrics([row]);  
+      }      
+    } 
+    function submitBatch() {
+      $.post('/signup/batch', { data: myData }, 
+        function(returnedData){
+          window.location.replace("/");
+    });
+    }
+    //Remove metric
+    function remove(element) {
+      //Confirm dialog box
+      if (confirm("Are you sure you want the delete metric n° "+ element.parentNode.parentNode.rowIndex+" ?")) {
+        //Http request to app.delete '/:chart_id/:timestamp'
+        
+      //Reload page
+      location.reload();
+      }
+    }
+    //Display metric timestamp and value on table
+    function DisplayMetrics(myData) {
+      for(i=0;i<myData.length;i++){
+        var table = document.getElementById("metrics");
+        var row = table.insertRow(1);
+        var cell1 = row.insertCell(0);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        cell1.innerHTML = myData[i].timestamp;
+        cell2.innerHTML = myData[i].value;
+        cell3.innerHTML = '<button type="button" class="btn btn-default btn-sm" onclick="remove(this)" aria-label="Left Align"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button>';
+      }
+      
+    }
+    $(document).ready(function() {
+      myData = [];
+      $('#metrics').hide();
+      //Display datepicker
+    $('#datetimepicker1').datetimepicker({
+    format: 'YYYY-MM-DD'
+    });
+    });
