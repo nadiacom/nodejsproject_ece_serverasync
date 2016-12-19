@@ -17,7 +17,7 @@ LevelStore = require('level-session-store')(session)
 app.set 'port', 1337  
 
 # set views
-app.set 'views', "#{__dirname}/../views" 
+app.set 'views', "./../views" 
 app.set 'view engine', 'jade'
 
 # Make it sexy ! bootstrap css & jquery js links
