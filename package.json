@@ -36,7 +36,8 @@
     "express-session": "*",
     "level-session-store": "*",
     "express-sessions": "*",
-    "middleware": "*"
+    "middleware": "*",
+    "should":"*"
   },
   "devDependencies": {
     "istanbul": "^0.4.5"
