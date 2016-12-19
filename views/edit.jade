@@ -2,7 +2,8 @@ include mixins
 extends layout
 
 block append content
-  div.container
+  +panel("Edit your metrics") Save them clicking on OK, go to Dashboard tab to display them.
+  div.main.container
     div#main
     div.container
       div.row
@@ -26,7 +27,7 @@ block append content
             div.col-md-4
               div.form-group
                 div#value.input-group.date
-                  input.form-control(placeholder='Enter your value here',name='value',class="form-control",value='')
+                  input.form-control(placeholder='Enter your value here',name='value',class="form-control",value='',type='number')
             div.col-md-2
               div.form-group
                 button.btn.btn-default(type='submit') OK
@@ -64,11 +65,13 @@ block append content
     $.getJSON("/my_many_metrics/"+'#{username}'+"/"+#{pageData.chart_id}, {}, function(data) {
     myData = JSON.parse(JSON.parse(data));
     //Call display function
+    $('#metrics').show();
     DisplayMetrics(myData);
     return myData;
     });
     
     $(document).ready(function() {
+      $('#metrics').hide();
       //Display datepicker
     $('#datetimepicker1').datetimepicker({
     format: 'YYYY-MM-DD'
