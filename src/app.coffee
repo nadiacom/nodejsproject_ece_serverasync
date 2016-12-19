@@ -20,6 +20,8 @@ app.set 'port', 1337  
 app.set 'views', "#{__dirname}/../views" 
 app.set 'view engine', 'jade'
 
+app.set 'db', "#{__dirname}/../db" 
+
 # Make it sexy ! bootstrap css & jquery js links
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
