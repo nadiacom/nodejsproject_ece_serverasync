@@ -7,22 +7,25 @@ metrics = require('../lib/metrics.js');
 
 //user.js
 describe('get user from leveldb', function() {
+  user.save("username_test","password_test",function(err, data) {
+    return "test";
+  });
   return it('should get a user w/ right parameters', function(done) {
-    return user.get("nadia", function(err, data) {
-      data.username.should.equal("nadia");
+    return user.get("username_test", function(err, data) {
+      data.username.should.equal("username_test");
       return done();
     });
   });
 });
 
 describe('save one user on leveldb', function() {
-  user.save("username_test2","passwor_test",function(err, data) {
+  user.save("username_test2","password_test",function(err, data) {
     return "test";
   });
   return it('should get a user w/ right parameters', function(done) {
     return user.get("username_test2", function(err, data) {
       data.username.should.equal("username_test2");
-      data.password.should.equal("passwor_test");
+      data.password.should.equal("password_test");
       return done();
     });
   });

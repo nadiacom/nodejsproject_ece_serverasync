@@ -23,8 +23,8 @@ app.set 'view engine', 'jade'
 # Make it sexy ! bootstrap css & jquery js links
 # Get /public/..
 app.use '/public', express.static "#{__dirname}/../public"
-# Get /public/..
-app.use '/public/css', express.static "#{__dirname}/../public/css"
+# Get /db/..
+app.use '/db', express.static "#{__dirname}/../db"
 
 # Get /styles/..
 app.use '/styles', express.static "#{__dirname}/../styles"
