@@ -1,11 +1,0 @@
-#metrics.put 0, req.body, (err, value) -> 
-  #throw err  if err
-  #res.json value
-
-#install
-npm install nodemon
-npm install bootstrap
-npm install --save levelup leveldown level-ws
-npm i --save body-parser
-npm install d3
-npm install
